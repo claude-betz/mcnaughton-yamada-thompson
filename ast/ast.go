@@ -4,7 +4,7 @@ import (
 	"github.com/claude-betz/mcnaughton-yamada-thompson/nfa"
 )
 
-func buildBaseCase(char rune) *nfa.Nfa {
+func BuildBaseCase(char rune) *nfa.Nfa {
 	startState := &nfa.Nfa{
 		Accepting: false,
 		Edges: make(map[rune][]*nfa.Nfa),
@@ -22,7 +22,7 @@ func buildBaseCase(char rune) *nfa.Nfa {
 	return startState 
 }
 
-func buildClosure(n *nfa.Nfa) *nfa.Nfa {
+func BuildClosure(n *nfa.Nfa) *nfa.Nfa {
 	startState := &nfa.Nfa{
 		Accepting: false,
 		Edges: make(map[rune][]*nfa.Nfa),
@@ -57,7 +57,7 @@ func buildClosure(n *nfa.Nfa) *nfa.Nfa {
 	return startState	
 }
 
-func buildConcat(n1, n2 *nfa.Nfa) *nfa.Nfa {
+func BuildConcat(n1, n2 *nfa.Nfa) *nfa.Nfa {
 	// merge end state of N(s) and start state of N(t)
 	nfa1EndState := nfa.GetEndState(n1)
 	nfa1EndState.Accepting = false	
@@ -68,7 +68,7 @@ func buildConcat(n1, n2 *nfa.Nfa) *nfa.Nfa {
 	return n1
 }
 
-func buildUnion(n1, n2 *nfa.Nfa) *nfa.Nfa {
+func BuildUnion(n1, n2 *nfa.Nfa) *nfa.Nfa {
 	startState := &nfa.Nfa{
 		Accepting: false,
 		Edges: make(map[rune][]*nfa.Nfa),

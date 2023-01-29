@@ -6,20 +6,20 @@ import (
 )
 
 var (
-	test1 = buildBaseCase('a')
+	test1 = BuildBaseCase('a')
 	
-	n1 = buildBaseCase('a')
-	n2 = buildBaseCase('b')
-	test2 = buildUnion(n1, n2) 
+	n1 = BuildBaseCase('a')
+	n2 = BuildBaseCase('b')
+	test2 = BuildUnion(n1, n2) 
 	
-	n3 = buildBaseCase('a')
-	n4 = buildBaseCase('b')
-	n5 = buildUnion(n3, n4) 
-	n6 = buildBaseCase('c')
-	test3 = buildConcat(n5, n6)
+	n3 = BuildBaseCase('a')
+	n4 = BuildBaseCase('b')
+	n5 = BuildUnion(n3, n4) 
+	n6 = BuildBaseCase('c')
+	test3 = BuildConcat(n5, n6)
 
-	n7 = buildBaseCase('a')
-	test4 = buildClosure(n7)
+	n7 = BuildBaseCase('a')
+	test4 = BuildClosure(n7)
 )
 
 var testCases = []struct{
