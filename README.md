@@ -1,0 +1,1 @@
+# McNaughton-Yamada-Thompson
