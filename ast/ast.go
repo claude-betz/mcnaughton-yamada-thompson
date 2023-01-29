@@ -1,102 +1,106 @@
 package ast
 
-func buildBaseCase(char rune) *nfa {
-	startState := &nfa{
-		accepting: false,
-		edges: make(map[rune][]*nfa),
+import (
+	"github.com/claude-betz/mcnaughton-yamada-thompson/nfa"
+)
+
+func buildBaseCase(char rune) *nfa.Nfa {
+	startState := &nfa.Nfa{
+		Accepting: false,
+		Edges: make(map[rune][]*nfa.Nfa),
 	}
 
-	endState := &nfa{
-		accepting: true,
-		edges: make(map[rune][]*nfa),
+	endState := &nfa.Nfa{
+		Accepting: true,
+		Edges: make(map[rune][]*nfa.Nfa),
 	}
 	
-	startState.edges[char] = []*nfa{
+	startState.Edges[char] = []*nfa.Nfa{
 		endState,
 	}
 
 	return startState 
 }
 
-func buildClosure(n *nfa) *nfa {
-	startState := &nfa{
-		accepting: false,
-		edges: make(map[rune][]*nfa),
+func buildClosure(n *nfa.Nfa) *nfa.Nfa {
+	startState := &nfa.Nfa{
+		Accepting: false,
+		Edges: make(map[rune][]*nfa.Nfa),
 	}
 
-	endState := &nfa{
-		accepting: true,
-		edges: make(map[rune][]*nfa),
+	endState := &nfa.Nfa{
+		Accepting: true,
+		Edges: make(map[rune][]*nfa.Nfa),
 	}
 
-	// add epsilon transition from start state of new NFA
+	// add nfa.Epsilon transition from start state of new NFA
 	// 1. to start state of N(s) 
 	// 2. to end state of new NFA 
-	startState.edges[eps] = []*nfa{
+	startState.Edges[nfa.Eps] = []*nfa.Nfa{
 		n,
 		endState,
 	}
 		
-	nfaEndState := GetEndState(n)
+	nfaEndState := nfa.GetEndState(n)
 	// set end state as not final
-	nfaEndState.accepting = false
+	nfaEndState.Accepting = false
 
-	// add epsilon transition from end state of N(s):
+	// add nfa.Epsilon transition from end state of N(s):
 	// 1. to start state of N(s)	
 	// 2. to end state of new NFA	
-	endStateArr := []*nfa{
+	endStateArr := []*nfa.Nfa{
 		n,
 		endState,
 	}
-	nfaEndState.edges[eps] = endStateArr
+	nfaEndState.Edges[nfa.Eps] = endStateArr
 
 	return startState	
 }
 
-func buildConcat(n1, n2 *nfa) *nfa {
+func buildConcat(n1, n2 *nfa.Nfa) *nfa.Nfa {
 	// merge end state of N(s) and start state of N(t)
-	nfa1EndState := GetEndState(n1)
-	nfa1EndState.accepting = false	
-	nfa1EndState.edges[eps] = []*nfa{
+	nfa1EndState := nfa.GetEndState(n1)
+	nfa1EndState.Accepting = false	
+	nfa1EndState.Edges[nfa.Eps] = []*nfa.Nfa{
 		n2,
 	}
 
 	return n1
 }
 
-func buildUnion(n1, n2 *nfa) *nfa {
-	startState := &nfa{
-		accepting: false,
-		edges: make(map[rune][]*nfa),
+func buildUnion(n1, n2 *nfa.Nfa) *nfa.Nfa {
+	startState := &nfa.Nfa{
+		Accepting: false,
+		Edges: make(map[rune][]*nfa.Nfa),
 	}
 
-	endState := &nfa{
-		accepting: true,
-		edges: make(map[rune][]*nfa),
+	endState := &nfa.Nfa{
+		Accepting: true,
+		Edges: make(map[rune][]*nfa.Nfa),
 	}
 	
-	// add epsilon transition from start state of new NFA
+	// add nfa.Epsilon transition from start state of new NFA
 	// 1. to start state of N(s)
 	// 2. to start state of N(t)
-	startState.edges[eps] = []*nfa{
+	startState.Edges[nfa.Eps] = []*nfa.Nfa{
 		n1,
 		n2,
 	}
 
-	// add epsilon transition from end state of
+	// add nfa.Epsilon transition from end state of
 	// 1. N(s) to end state of new NFA
 	// 2. N(t) to end state of new NFA
-	nfa1EndState := GetEndState(n1)
-	nfa2EndState := GetEndState(n2)
+	nfa1EndState := nfa.GetEndState(n1)
+	nfa2EndState := nfa.GetEndState(n2)
 
 	// set end states to false
-	nfa1EndState.accepting = false
-	nfa2EndState.accepting = false
+	nfa1EndState.Accepting = false
+	nfa2EndState.Accepting = false
 
-	nfa1EndState.edges[eps] = []*nfa{
+	nfa1EndState.Edges[nfa.Eps] = []*nfa.Nfa{
 		endState,
 	}
-	nfa2EndState.edges[eps] = []*nfa{
+	nfa2EndState.Edges[nfa.Eps] = []*nfa.Nfa{
 		endState,
 	}
 	

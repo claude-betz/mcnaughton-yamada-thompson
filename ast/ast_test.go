@@ -2,6 +2,7 @@ package ast
 
 import (
 	"testing"
+	"github.com/claude-betz/mcnaughton-yamada-thompson/nfa"
 )
 
 var (
@@ -22,7 +23,7 @@ var (
 )
 
 var testCases = []struct{
-	nfa *nfa
+	nfa *nfa.Nfa
 	inputs []string
 	outputs []bool
 }{

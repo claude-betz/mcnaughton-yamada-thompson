@@ -8,18 +8,18 @@ import (
 )
 
 const (
-	eps = 'ε'
+	Eps = 'ε'
 )
 
-type nfa struct {
-	accepting bool
-	edges map[rune][]*nfa
+type Nfa struct {
+	Accepting bool
+	Edges map[rune][]*Nfa
 }
 
-func GetEndState(n *nfa) *nfa {
-	for _, nextList := range n.edges {
+func GetEndState(n *Nfa) *Nfa {
+	for _, nextList := range n.Edges {
 		for _, elem := range nextList {
-			if elem.accepting {
+			if elem.Accepting {
 				return elem
 			}
 			return GetEndState(elem)
@@ -29,17 +29,17 @@ func GetEndState(n *nfa) *nfa {
 	return nil
 }
 
-func epsilonClosure(T []*nfa) []*nfa {
+func EpsilonClosure(T []*Nfa) []*Nfa {
 	// initialise
-	var epsClosure []*nfa
+	var EpsClosure []*Nfa
 
 	// stack
-	stack := make([]*nfa, 0)
+	stack := make([]*Nfa, 0)
 
-	// push all initial states to epsClosure and stack 
-	for _, nfa := range T {
-		epsClosure = append(epsClosure, nfa)
-		stack = append(stack, nfa) 
+	// push all initial states to EpsClosure and stack 
+	for _, Nfa := range T {
+		EpsClosure = append(EpsClosure, Nfa)
+		stack = append(stack, Nfa) 
 	}
 
 	// while stack not empty
@@ -53,21 +53,21 @@ func epsilonClosure(T []*nfa) []*nfa {
 		// pop
 		stack = stack[:len(stack)-1]
 
-		// iterate all states reachable via eps
-		for _, nfa := range t.edges[eps] {
-			epsClosure = append(epsClosure, nfa)
-			stack = append(stack, nfa)
+		// iterate all states reachable via Eps
+		for _, Nfa := range t.Edges[Eps] {
+			EpsClosure = append(EpsClosure, Nfa)
+			stack = append(stack, Nfa)
 		}
 	}
 
-	return epsClosure 
+	return EpsClosure 
 }
 
-func Move(T []*nfa, c rune) []*nfa {
-	var res []*nfa
+func Move(T []*Nfa, c rune) []*Nfa {
+	var res []*Nfa
 
-	for _, nfa := range T {
-		val, ok := nfa.edges[c]
+	for _, Nfa := range T {
+		val, ok := Nfa.Edges[c]
 		if ok {
 			res = append(res, val...)
 		}
@@ -76,10 +76,10 @@ func Move(T []*nfa, c rune) []*nfa {
 	return res
 }
 
-func (n *nfa) Simulate(input string) bool {
+func (n *Nfa) Simulate(input string) bool {
 	buf := bytes.NewBufferString(input)
 
-	S := epsilonClosure([]*nfa{n})
+	S := EpsilonClosure([]*Nfa{n})
 	c, _, err := buf.ReadRune()
 
 	for {
@@ -87,25 +87,25 @@ func (n *nfa) Simulate(input string) bool {
 			break
 		}
 
-		S = epsilonClosure(Move(S, c))
+		S = EpsilonClosure(Move(S, c))
 		c, _, err = buf.ReadRune()
 	}
 
 	for _, s := range S {
-		if s.accepting {
+		if s.Accepting {
 			return true
 		}
 	}
 	return false
 }
 
-func (n *nfa) PrintNFA() {
+func (n *Nfa) PrintNFA() {
 	// need to track assigned state numbers
-	var seen = make(map[*nfa]int)
-	var levelMap = make(map[*nfa]int)	
+	var seen = make(map[*Nfa]int)
+	var levelMap = make(map[*Nfa]int)	
 
 	// queue for bfs
-	var queue []*nfa
+	var queue []*Nfa
 
 	// nextState
 	var stateId = 0
@@ -114,7 +114,7 @@ func (n *nfa) PrintNFA() {
 	var level = 1
 
 	// populate level 0  
-	for key, nextStates := range n.edges {	
+	for key, nextStates := range n.Edges {	
 		for _, nextState := range nextStates {
 			// increment stateId
 			stateId++
@@ -148,7 +148,7 @@ func (n *nfa) PrintNFA() {
 		// currLevel
 		currLevel := levelMap[curr]
 		
-		for char, nextStates := range curr.edges {			
+		for char, nextStates := range curr.Edges {			
 			for _, nextState := range nextStates {
 				val, ok := seen[nextState]
 
