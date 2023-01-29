@@ -23,6 +23,10 @@ func matchCharacter(c string, opts ...string) (bool, error) {
 	return false, fmt.Errorf("unknown token %s", c)
 }
 
+func Parse(s *string) (*nfa.Nfa, error) {
+	return union(s)
+}
+
 func union(s *string) (*nfa.Nfa, error) {
 	n1, err := concat(s)
 	if err != nil {
