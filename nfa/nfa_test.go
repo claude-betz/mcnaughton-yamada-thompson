@@ -1,4 +1,4 @@
-package main
+package nfa
 
 import (
 	"testing"
